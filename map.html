@@ -1,0 +1,75 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>显示位置</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+　　 <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.3"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+　　</head>
+<body style="background:#f9f9f9; margin:0 auto">
+    <div style="width:1000px;margin:30px auto;">
+        <div id="container" style="position:absolute; margin-top:30px; width:1000px; height:700px; top:50; border:1px solid gray; overflow:hidden;"></div>
+    </div>
+</body>
+<script type="text/javascript">
+
+    var data = [
+        {name:'陈亚杰',tel:'13139002555',address:'格尔木市柴达木东路59号'},
+        {name:'王磊',tel:'13734691967',address:'格尔木市柴达木西路23号'},
+        {name:'呼文秀',tel:'13086216258',address:'西宁市城北区牧科院家属院'},
+        {name:'李旸',tel:'15587093622',address:'昆明市西山区安康路八哥巷17号'},
+        {name:'柳斐',tel:'17797171231',address:'海湖新区谦和园'},
+        {name:'唐静',tel:'13289319959',address:'西安长安区国色天香'},
+        {name:'杜宛星',tel:'13007780700',address:'青海省西宁市海湖新区金座晟锦B座'},
+        {name:'徐舒白（徐世唯）',tel:'15387585607',address:'湖南省长沙市开福区万家丽北路威尔士春天'},
+        {name:'王雪燕',tel:'18278964690',address:'广西壮族自治区北海市海城区中安止泊园'},
+        {name:'倪萍',tel:'18112687668',address:'江苏省张家港市塘市花苑'},
+        {name:'苏洁',tel:'18797185576',address:'西宁市城西区西关大街23号锦绣华庭'},
+        {name:'韩朝',tel:'18779129964',address:'贵州省遵义市播州区保利一街区'},
+        {name:'丁静',tel:'18913599019',address:'江苏省苏州市吴中区太湖旅度假区'},
+        {name:'陈珺洁',tel:'18278964690',address:'西宁城北国际村'},
+        {name:'王东黄钰茗',tel:'18809791456',address:'西宁市城北区祁连路锦绣江南'},
+        {name:'王东黄钰茗',tel:'13572429491',address:'山东省临沂市罗庄区星河城学府'},
+        {name:'张鹏',tel:'15500792216',address:'西宁市城西区海晏路明都大厦'},
+        {name:'魏强',tel:'15229296500',address:'青海青西宁市海西路59号'}
+
+    ]
+    var map = new BMap.Map("container");
+    map.centerAndZoom("甘肃省", 5);
+    map.enableScrollWheelZoom();    //启用滚轮放大缩小，默认禁用
+    map.enableContinuousZoom();    //启用地图惯性拖拽，默认禁用
+
+    map.addControl(new BMap.NavigationControl());  //添加默认缩放平移控件
+    map.addControl(new BMap.OverviewMapControl()); //添加默认缩略地图控件
+    map.addControl(new BMap.OverviewMapControl({ isOpen: true, anchor: BMAP_ANCHOR_BOTTOM_RIGHT }));   //右下角，打开
+
+    var localSearch = new BMap.LocalSearch(map);
+    localSearch.enableAutoViewport(); //允许自动调节窗体大小
+    localSearch.setSearchCompleteCallback(function (searchResult) {
+        console.log(searchResult)
+        var poi = searchResult.getPoi(0);
+        var marker = new BMap.Marker(new BMap.Point(poi.point.lng, poi.point.lat));  // 创建标注，为要查询的地方对应的经纬度
+        var labeltext = '';
+        $.each(data,function(i,n){
+            if(n.address==searchResult.keyword){
+                labeltext = n.name
+            }
+        })
+        let label = new BMap.Label(labeltext,{offset:new BMap.Size(5,3)});
+                         label.setStyle({
+                             background:'none',
+                             color:'#000000',
+                             border:'none'
+                         });
+
+        marker.setLabel(label);
+        map.addOverlay(marker);
+        marker.addEventListener("click", function () {
+        });
+    });
+
+
+    $.each(data,function(i,n){
+         localSearch.search(n.address);
+    })
+</script>
+</html>
